@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
+const { promisify } = require('util');
+const cleanCache = require('../middlewares/cleanCache');
 
 const Blog = mongoose.model('Blog');
 
@@ -14,12 +16,24 @@ module.exports = app => {
   });
 
   app.get('/api/blogs', requireLogin, async (req, res) => {
-    const blogs = await Blog.find({ _user: req.user.id });
 
-    res.send(blogs);
+    try {
+
+      const blogs = await Blog
+          .find({_user: req.user.id })
+          .cache({ key: req.user.id });
+
+      res.send(blogs);
+
+    } catch (e) {
+      console.log(`almog errror`);
+      console.error(e.toString())
+      //todo handle error
+    }
+
   });
 
-  app.post('/api/blogs', requireLogin, async (req, res) => {
+  app.post('/api/blogs', requireLogin, cleanCache, async (req, res, next) => {
     const { title, content } = req.body;
 
     const blog = new Blog({
@@ -34,5 +48,8 @@ module.exports = app => {
     } catch (err) {
       res.send(400, err);
     }
+
+    next()
+
   });
 };
