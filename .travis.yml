@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "8"
+  - 8
 dist: trusty
 sudo: required
 addons:
@@ -19,9 +19,7 @@ cache:
     - node_modules
     - client/node_modules
 install:
-  -npm install
-  -npm run build
-script:
+  - npm install
+  - npm run build
   - nohup npm run start &
   - sleep 3
-  - npm run test
