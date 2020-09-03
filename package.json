@@ -37,6 +37,6 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "puppeteer": "^1.17.0"
+    "puppeteer": "^1.13.0"
   }
 }
